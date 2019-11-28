@@ -228,9 +228,8 @@ void FapUALinkRamSettings::onModelMemberDisconnected(FmModelMemberBase* item)
 }
 
 
-FapUALinkRamSettings::SignalConnector::SignalConnector(FapUALinkRamSettings* itsOwner)
+FapUALinkRamSettings::SignalConnector::SignalConnector(FapUALinkRamSettings* lrs) : owner(lrs)
 {
-  this->owner = itsOwner;
   FFaSwitchBoard::connect(FmModelMemberBase::getSignalConnector(),
 			  FmModelMemberBase::MODEL_MEMBER_CHANGED,
 			  FFaSlot1M(SignalConnector,this,onModelMemberChanged,FmModelMemberBase*));
@@ -240,4 +239,10 @@ FapUALinkRamSettings::SignalConnector::SignalConnector(FapUALinkRamSettings* its
   FFaSwitchBoard::connect(FmModelMemberBase::getSignalConnector(),
 			  FmModelMemberBase::MODEL_MEMBER_FINISHED_DISCONNECTED,
 			  FFaSlot1M(SignalConnector,this,onModelMemberDisconnected,FmModelMemberBase*));
+}
+
+
+FapUALinkRamSettings::SignalConnector::~SignalConnector()
+{
+  FFaSwitchBoard::removeAllOwnerConnections(this);
 }
