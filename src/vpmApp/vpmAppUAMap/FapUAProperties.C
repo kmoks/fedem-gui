@@ -3905,9 +3905,9 @@ void FapUAProperties::linkChangeVizCB(const std::string& file, bool promptForFil
   if (promptForFile)
   {
     FileFilter filter;
-    filter["VRML File"]                  = { "vrml", "wrl", "vrl", "wrz" };
+    filter["VRML model"]                 = { "vrml", "vrl", "wrl", "wrz" };
     filter["Fedem Technology CAD model"] = { "ftc" };
-    filter["Wavefront obj"]              = { "obj" };
+    filter["Wavefront OBJ model"]        = { "obj" };
     std::string fileName = part->visDataFile.getValue();
     if (browseDataFile(fileName,"visualization",filter))
       changed = part->setVisualizationFile(fileName);
