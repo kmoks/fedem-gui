@@ -218,6 +218,7 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
 
     word[i == n ? --i : i] = 0;
 
+    std::cout << pos <<" "<< ftell(file) <<" got word \""<< word <<"\""<< std::endl;
     return i;
   };
 
@@ -236,6 +237,7 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
     if (strcmp(lineHeader, "v") == 0) {
       if (fscanf(file, "%f %f %f\n", &x, &y, &z) >= 0)
         vertices.push_back(FaVec3(x,y,z));
+      std::cout <<"Read vertex "<< vertices.size() <<": "<< vertices.back() << std::endl;
     }
     else if (strcmp(lineHeader, "vt") == 0) {
       if (fscanf(file, "%f %f\n", &x, &y) >= 0)
@@ -244,6 +246,7 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
     else if (strcmp(lineHeader, "vn") == 0) {
       if (fscanf(file, "%f %f %f\n", &x, &y, &z) >= 0)
         normals.push_back(FaVec3(x, y, z));
+      std::cout <<"Read normal "<< normals.size() <<": "<< normals.back() << std::endl;
     }
     else if (strcmp(lineHeader, "g") == 0) {
       long int pos = ftell(file);
@@ -252,6 +255,7 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
       else
 	lineHeader[strlen(lineHeader)-1] = 0; // Replace newline by 0
       geometryGroups.push_back({lineHeader, pos});
+      std::cout <<"Read group "<< geometryGroups.size() <<": \""<< geometryGroups.back().first <<"\" "<< geometryGroups.back().second << std::endl;
     }
 
   ListUI <<"("<< vertices.size() <<" vertices";
@@ -287,6 +291,7 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
     pos = geometryGroups.front().second;
   else if (numGroups > 0)
     pos = geometryGroups[groupId].second;
+  std::cout <<"\nReset file position to "<< pos << std::endl;
   if (fseek(file, pos, SEEK_SET) < 0)
     perror("fseek");
 
@@ -319,6 +324,9 @@ static SoSeparator* loadObjFile(const char* fName, bool triangles, float scale,
         ints.push_back(atoi(lineHeader+j));
 
       int matches = ints.size();
+      std::cout <<"Face indices \""<< lineHeader <<"\": #"<< matches;
+      for (int i : ints) std::cout <<" "<< i;
+      std::cout << std::endl;
 
       // TODO(Runar): Handle both triangles and quads
       if (triangles)
