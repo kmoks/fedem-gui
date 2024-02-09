@@ -5,3 +5,4 @@
 [submodule "fedem-mdb"]
 	path = fedem-mdb
 	url = ../fedem-mdb.git
+        branch = qt6-port
