@@ -182,7 +182,7 @@ void FFuQtScrolledList::keyPressEvent(QKeyEvent* e)
 void FFuQtScrolledList::mousePressEvent(QMouseEvent* e)
 {
 #if !defined(win32) && !defined(win64)
-  if (IAmEnabled && e->button() == Qt::MidButton)
+  if (IAmEnabled && e->button() == Qt::MiddleButton)
   {
     this->paste();
     e->accept();
