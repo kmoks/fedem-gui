@@ -187,8 +187,8 @@ void FpProcess::readStdErr()
   myQProcess->setReadChannel(QProcess::StandardError);
   while (myQProcess->canReadLine())
   {
-    QByteArray qline = myQProcess->readLine();
+    QString qline = QString(myQProcess->readLine());
     if (!qline.isEmpty())
-      std::cerr << myName <<" ["<< myPID <<"]: "<< qline;
+      std::cerr << myName <<" ["<< myPID <<"]: "<< qline.toStdString();
   }
 }
