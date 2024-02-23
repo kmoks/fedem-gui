@@ -62,7 +62,6 @@ public:
   virtual void setTextFont(const FFuaFont& aFont);
 
 private slots:
-  void fwdTextChanged()      { myTextChangedCB.invoke(); }
   void fwdSelectionChanged() { mySelectionChangedCB.invoke(); }
 
 protected:
@@ -73,7 +72,8 @@ protected:
   virtual void setColors(FFuaPalette aPalette);
   virtual void setFonts (FFuaFontSet aFontSet);
 
-  // Reimplement the virtual method from QTextEdit
+  // Reimplement virtual methods from QTextEdit
+  virtual void keyPressEvent(QKeyEvent* event);
   virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:

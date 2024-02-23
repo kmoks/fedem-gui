@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QFile>
 #include <QFont>
+#include <QKeyEvent>
 
 #include "FFuLib/FFuQtComponents/FFuQtMemo.H"
 
@@ -31,7 +32,6 @@ FFuQtMemo::FFuQtMemo(QWidget* parent, bool withClearCmd) : QTextEdit(parent)
 {
   this->setWidget(this);
 
-  QObject::connect(this,SIGNAL(textChanged()),this,SLOT(fwdTextChanged()));
   QObject::connect(this,SIGNAL(selectionChanged()),this,SLOT(fwdSelectionChanged()));
   haveClearCmd = withClearCmd;
 }
@@ -364,6 +364,22 @@ bool FFuQtMemo::readOnly() const
 {
   return this->isReadOnly();
 }
+
+
+//! Invokes the text-changed call-back when the Return key is pressed.
+void FFuQtMemo::keyPressEvent(QKeyEvent* event)
+{
+  this->QTextEdit::keyPressEvent(event);
+  if (!myTextChangedCB.empty() && event->key() == Qt::Key_Return)
+  {
+    QTextCursor cursor = this->textCursor();
+    int pos = cursor.position();
+    myTextChangedCB.invoke();
+    cursor.setPosition(pos);
+    this->setTextCursor(cursor);
+  }
+}
+
 
 //! Customize the right-click menu adding the clear command if wanted
 void FFuQtMemo::contextMenuEvent(QContextMenuEvent* event)
