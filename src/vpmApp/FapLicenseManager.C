@@ -148,12 +148,7 @@ bool FapLicenseManager::checkVTFExportLicense(bool checkOut)
 
 bool FapLicenseManager::hasUserGuide()
 {
-  if (FapLicenseManager::checkWindpowerLicense(false))
-    return FpFileSys::isReadable(FpPM::getFullFedemPath("Doc/FedemUsersGuide-WindPower.pdf"));
-  else if (FapLicenseManager::checkOffshoreLicense(false))
-    return FpFileSys::isReadable(FpPM::getFullFedemPath("Doc/FedemUsersGuide-WindPower.pdf"));
-  else
-    return FpFileSys::isReadable(FpPM::getFullFedemPath("Doc/FedemUsersGuide.pdf"));
+  return FpFileSys::isReadable(FpPM::getFullFedemPath("Doc/FedemUsersGuide.pdf"));
 }
 
 
