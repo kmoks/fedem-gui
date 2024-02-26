@@ -24,12 +24,10 @@ public:
 		     const char* name="FuiQtItemsListView");
   virtual ~FuiQtItemsListView() {}
 
-private:
-  virtual bool event(QEvent* e);
+protected:
   virtual void setVisible(bool visible);
-
-private slots:
-  void onDropped(QDropEvent* e);
+  virtual bool event(QEvent* e);
+  virtual void dropEvent(QDropEvent* e);
 };
 
 #endif
