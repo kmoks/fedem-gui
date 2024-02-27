@@ -93,7 +93,7 @@ set ( SOURCE_FILES ${CPP_SOURCE_FILES} ${QT_MOC_SOURCE_FILES} )
 
 if ( Coin_library )
   if ( WIN )
-    string ( APPEND CMAKE_CXX_FLAGS " -DCOIN_DLL -DSOQT_DLL" )
+    string ( APPEND CMAKE_CXX_FLAGS " -DCOIN_DLL" )
   endif ( WIN )
   if ( DEFINED ENV{COIN_ROOT} )
     include_directories ( "$ENV{COIN_ROOT}/include" )

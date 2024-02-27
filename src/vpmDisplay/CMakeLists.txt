@@ -15,7 +15,6 @@ if ( WIN )
   set ( SDK_ROOT "C:/Program Files (x86)/Windows Kits/10/Lib" )
   find_library ( DSO_LIBGL OpenGL32 HINTS ${SDK_ROOT}/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/um/x64 )
   find_library ( SmallChange_library SmallChange1 $ENV{COIN_ROOT}/lib )
-  find_library ( SoQt_library SoQt1 $ENV{COIN_ROOT}/lib )
   find_library ( Simage_library simage1 $ENV{COIN_ROOT}/lib )
   if ( DEFINED ENV{EXPAT_ROOT} )
     find_library ( Expat_library libexpat $ENV{EXPAT_ROOT}/lib )
@@ -23,19 +22,17 @@ if ( WIN )
 elseif ( DEFINED ENV{COIN_ROOT} )
   find_library ( DSO_LIBGL GL /usr/lib64 )
   find_library ( SmallChange_library SmallChange $ENV{COIN_ROOT}/lib )
-  find_library ( SoQt_library SoQt $ENV{COIN_ROOT}/lib )
   find_library ( Simage_library simage $ENV{COIN_ROOT}/lib )
 else ( WIN )
   find_library ( DSO_LIBGL GL /usr/lib64 )
   find_library ( SmallChange_library SmallChange )
-  find_library ( SoQt_library SoQt )
   find_library ( Simage_library simage )
 endif ( WIN )
 
 set ( EXTERNAL_LIBRARIES ${Coin_library} ${SoQt_library} Qt6::OpenGL ${DSO_LIBGL} )
 
 if ( WIN )
-  string ( APPEND CMAKE_CXX_FLAGS " -Dwin32 -DCOIN_DLL -DSOQT_DLL" )
+  string ( APPEND CMAKE_CXX_FLAGS " -Dwin32 -DCOIN_DLL" )
 endif ( WIN )
 if ( DEFINED ENV{COIN_ROOT} )
   include_directories ( "$ENV{COIN_ROOT}/include" )
@@ -93,6 +90,10 @@ set ( COMPONENT_FILE_LIST  FaDOF Fd2dPictureNode Fd2DPoints
                            FdTire FdTransformKit FdTriad FdTriadSwKit
                            FdUserDefinedElement qtViewers/FdQtViewer
 )
+if ( Quarter_FOUND )
+  list(APPEND COMPONENT_FILE_LIST qtViewers/FdQuarterViewer)
+endif ( Quarter_FOUND )
+
 ## Pure header files, i.e., header files without a corresponding source file
 set ( HEADER_FILE_LIST FdLogoPicture FdMarkerPicture FdAnimatedBase FdConverter )
 ## Pure implementation files, i.e., source files without corresponding header
