@@ -91,15 +91,6 @@ set ( SOURCE_FILES ${CPP_SOURCE_FILES} ${QT_MOC_SOURCE_FILES} )
 
 # Dependencies and system libraries
 
-if ( Coin_library )
-  if ( WIN )
-    string ( APPEND CMAKE_CXX_FLAGS " -DCOIN_DLL -DSOQT_DLL" )
-  endif ( WIN )
-  if ( DEFINED ENV{COIN_ROOT} )
-    include_directories ( "$ENV{COIN_ROOT}/include" )
-  endif ( DEFINED ENV{COIN_ROOT} )
-endif ( Coin_library )
-
 set ( DEPENDENCY_LIST vpmUITopLevels vpmUIQtComponents FFuQtComponents FFuQtBaseClasses FFuComponents )
 if ( USE_WINDPOW )
   list ( APPEND DEPENDENCY_LIST FFuInputTables )
