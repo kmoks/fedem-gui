@@ -56,8 +56,8 @@ public:
                   const QOpenGLWidget* sharewidget = NULL,
                   Qt::WindowFlags flags = Qt::WindowFlags());
   // The SoQtViewer impersonation constructor
-  FdQuarterViewer(QWidget* parent = NULL,
-                  const char* name = NULL,
+  FdQuarterViewer(QWidget* parent,
+                  const char* name,
                   SbBool  embed = TRUE,
                   FdQuarterViewer::Type = FdQuarterViewer::Type::BROWSER,
                   SbBool  build = TRUE);
