@@ -220,7 +220,6 @@ public:
                                       void * const data);
 
   // Missing events
-  bool processSoEvent(const SoEvent* event) override;
   void paintEvent(QPaintEvent* event) override;
 
   // Missing functions that we are not porting
@@ -234,9 +233,11 @@ public:
     return this;
   }
 
+  // To enforce calling to setNavigationModeFile
   inline void setSceneGraph(SoNode* root) override
   {
     SIM::Coin3D::Quarter::QuarterWidget::setSceneGraph(root);
+    setNavigationModeFile(QUrl("coin:///scxml/navigation/examiner.xml"));
   }
 
   // To convert the Qt events to the SoQt ones
@@ -246,18 +247,18 @@ private:
   void init();
   static void convertPerspective2Ortho(const SoPerspectiveCamera* in,  SoOrthographicCamera* out);
   static void convertOrtho2Perspective(const SoOrthographicCamera* in, SoPerspectiveCamera* out);
-  void getCameraCoordinateSystem(SoCamera * camera, SoNode * root, SbMatrix & matrix, SbMatrix & inverse);
-  static void seeksensorCB(void * data, SoSensor * sensor);
-  void moveCameraScreen(const SbVec2f & screenpos);
+  void getCameraCoordinateSystem(SoCamera* camera, SoNode* root, SbMatrix& matrix, SbMatrix& inverse);
+  static void seeksensorCB(void* data, SoSensor* sensor);
+  void moveCameraScreen(const SbVec2f& screenpos);
   void resetFrameCounter();
   SbVec2f addFrametime(double ft);
   void setClippingPlanes(void);
-  static void rendercb(void *userdata, SoRenderManager *)
+  static void rendercb(void* userdata, SoRenderManager*)
   {
     FdQuarterViewer* thisp = static_cast<FdQuarterViewer*>(userdata);
     thisp->render();
   }
-  static void selection_redraw_cb(void * data, SoSelection * sel)
+  static void selection_redraw_cb(void* data, SoSelection* sel)
   {
     FdQuarterViewer * viewer = (FdQuarterViewer *) data;
     viewer->getSoRenderManager()->scheduleRedraw();
@@ -304,6 +305,7 @@ private:
   SbBool eventHandeled;
 
 protected:
+  bool eventFilter(QObject *obj, QEvent *e) override;
   static void draw2DString(const char * str, SbVec2s glsize, SbVec2f position);
   static void printString(const char * str);
   SbVec2f framesPerSecond;

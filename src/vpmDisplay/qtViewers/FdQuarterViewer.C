@@ -25,7 +25,7 @@
 #include <QWheelEvent>
 #include <QShowEvent>
 #include <QHideEvent>
-
+#include <QCoreApplication>
 
 #if !defined(FC_OS_MACOSX)
 # include <GL/gl.h>
@@ -567,38 +567,6 @@ FdQuarterViewer::removeVisibilityChangeCallback(FdQuarterVisibilityCB * const fu
 #endif // SOQT_DEBUG
 }
 
-bool
-FdQuarterViewer::processSoEvent(const SoEvent* event)
-{
-  const SoType type(event->getTypeId());
-  
-  constexpr const float delta = 0.1F;
-  if(type.isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-    const SoKeyboardEvent* keyevent = static_cast<const SoKeyboardEvent*>(event);
-    
-    if(keyevent->getState() == SoButtonEvent::DOWN) {
-      switch(keyevent->getKey()) {
-        case SoKeyboardEvent::LEFT_ARROW:
-          moveCameraScreen(SbVec2f(-delta, 0.0F));
-          return true;
-        case SoKeyboardEvent::UP_ARROW:
-          moveCameraScreen(SbVec2f(0.0F, delta));
-          return true;
-        case SoKeyboardEvent::RIGHT_ARROW:
-          moveCameraScreen(SbVec2f(delta, 0.0F));
-          return true;
-        case SoKeyboardEvent::DOWN_ARROW:
-          moveCameraScreen(SbVec2f(0.0F, -delta));
-          return true;
-        default:
-          break;
-      }
-    }
-  }
-  
-  return SIM::Coin3D::Quarter::QuarterWidget::processSoEvent(event);
-}
-
 void
 FdQuarterViewer::paintEvent(QPaintEvent* event)
 {
@@ -657,9 +625,8 @@ FdQuarterViewer::init()
   pickRadius = 5.0;
 
   seeksensor = new SoTimerSensor(FdQuarterViewer::seeksensorCB, (void*)this);
-  getSoEventManager()->setNavigationState(SoEventManager::NO_NAVIGATION);
-
   resetFrameCounter();
+  QCoreApplication::instance()->installEventFilter(this);
 }
 
 void
@@ -958,6 +925,26 @@ FdQuarterViewer::setClippingPlanes()
   if (farval != camera->farDistance.getValue()) {
     camera->farDistance = farval;
   }
+}
+
+bool
+FdQuarterViewer::eventFilter(QObject *obj, QEvent *e)
+{
+  if (obj == this) {
+    // Try to parse the event ourselves before quarter turns it on a SoEvent
+    eventHandeled = TRUE;
+    processEvent(e);
+
+    if (eventHandeled) {
+      if ((e->type() == QEvent::KeyPress) || (e->type() == QEvent::KeyRelease))
+      {
+        QKeyEvent * ke = (QKeyEvent *)e;
+        ke->accept();
+      }
+      return true;
+    }
+  }
+  return SIM::Coin3D::Quarter::QuarterWidget::eventFilter(obj, e);
 }
 
 void
