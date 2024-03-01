@@ -912,18 +912,18 @@ bool FpPM::vpmModelOpen(const std::string& givenName, bool doLoadParts,
     }
   }
 
-  if (doLoadParts)
+  if (doLoadParts && allParts.empty())
+    FmDB::getAllParts(allParts);
+
+  int numParts = FmDB::getObjectCount(FmPart::getClassTypeID());
+  if (!allParts.empty())
   {
     // Actually load the FE data
-    if (allParts.empty())
-      FmDB::getAllParts(allParts);
-
-    if (!allParts.empty())
-    {
-      Fui::okToGetUserInput();
-      FpPM::loadParts(allParts);
-      Fui::noUserInputPlease();
-    }
+    FFaMsg::enableProgress(2*numParts+1);
+    Fui::okToGetUserInput();
+    FpPM::loadParts(allParts);
+    Fui::noUserInputPlease();
+    FFaMsg::setProgress(numParts);
   }
 
 #ifdef FT_USE_PROFILER
@@ -939,9 +939,10 @@ bool FpPM::vpmModelOpen(const std::string& givenName, bool doLoadParts,
 
   // Create the visualization of the mechanism and show it
   FFaMsg::pushStatus("Creating visualization");
-  FFaMsg::enableSubSteps(FmDB::getObjectCount(FmPart::getClassTypeID()));
+  FFaMsg::enableSubSteps(numParts);
   FmDB::displayAll();
   FFaMsg::disableSubSteps();
+  FFaMsg::disableProgress();
   FFaMsg::setSubTask("");
   FFaMsg::popStatus();
 
@@ -1079,6 +1080,7 @@ bool FpPM::loadParts(const std::vector<FmPart*>& allParts)
   for (FmPart* part : allParts)
   {
     FFaMsg::setSubStep(++partNr);
+    FFaMsg::setProgress(partNr);
     if (progDlg)
       progDlg->setCurrentProgress(partNr-1);
 
