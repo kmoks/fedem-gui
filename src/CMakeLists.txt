@@ -57,6 +57,7 @@ endif ( "${USE_QWTLIB}" STREQUAL "External" )
 set ( USE_QT Qt6 )
 set ( USE_VISUALS TRUE )
 set ( USE_VERTEXOBJ TRUE )
+set ( USE_CONNECTORS TRUE )
 set ( SUBFOLDER_LIST Admin FFaLib FFlLib FFrLib
                      FFlrLib FFaFunctionLib FFaMathExpr
                      FiDeviceFunctions FiUserElmPlugin )
@@ -134,6 +135,7 @@ endif ( Coin_library )
 list ( APPEND DEPENDENCY_LIST vpmDB FiUserElmPlugin FFaOperation )
 
 message ( STATUS "Building executable Fedem" )
+string ( APPEND CMAKE_CXX_FLAGS " -DFT_USE_CONNECTORS" )
 add_executable ( Fedem WIN32 vpm_main.C vpm_main_init.C ${COM_FILES} ${APP_ICON} )
 target_link_libraries ( Fedem ${DEPENDENCY_LIST} )
 
