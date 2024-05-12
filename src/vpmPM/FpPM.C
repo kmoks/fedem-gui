@@ -939,11 +939,7 @@ bool FpPM::vpmModelOpen(const std::string& givenName, bool doLoadParts,
 
   // Create the visualization of the mechanism and show it
   FFaMsg::pushStatus("Creating visualization");
-  FFaMsg::enableSubSteps(numParts);
   FmDB::displayAll();
-  FFaMsg::disableSubSteps();
-  FFaMsg::disableProgress();
-  FFaMsg::setSubTask("");
   FFaMsg::popStatus();
 
 #ifdef FT_USE_PROFILER
@@ -1049,10 +1045,7 @@ bool FpPM::vpmAssemblyOpen(const std::string& givenName, bool doLoadParts)
 
   // Create the visualization of the mechanism and show it
   FFaMsg::pushStatus("Creating visualization");
-  FFaMsg::enableSubSteps(allParts.size());
   FmDB::displayAll(*newAss->getHeadMap());
-  FFaMsg::disableSubSteps();
-  FFaMsg::setSubTask("");
   FFaMsg::popStatus();
 
   // Update the object browser
@@ -1218,7 +1211,6 @@ bool FpPM::openTemplateFile(const std::string& modelPath)
 
   FFaMsg::pushStatus("Creating visualization");
   FmDB::displayAll();
-  FFaMsg::setSubTask("");
   FFaMsg::popStatus();
 
   FpPM::unTouchModel();
@@ -1710,10 +1702,7 @@ bool FpPM::vpmModelSaveAs(const std::string& name, bool saveReducedParts,
     {
       ListUI <<"  -> Model successfully updated with the state at time = "<< atTime <<"\n";
       FFaMsg::pushStatus("Update visualization");
-      FFaMsg::enableSubSteps(FmDB::getObjectCount(FmPart::getClassTypeID()));
       FmDB::displayAll();
-      FFaMsg::disableSubSteps();
-      FFaMsg::setSubTask("");
       FFaMsg::popStatus();
     }
   }
