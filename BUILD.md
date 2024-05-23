@@ -397,7 +397,7 @@ Proceed as follows:
 - From a bash shell or command prompt, clone the sources of this repository:
 
       cd ~/Fedem-src
-      git clone --recurse-submodules git@github.com:SAP/fedem-gui.git
+      git clone --recurse-submodules git@github.com:openfedem/fedem-gui.git
 
 - Configure for build in Visual Studio 2019 using `CMake`,
   e.g., execute the following bat script:
@@ -446,9 +446,9 @@ Proceed as follows:
   To build a complete installer for FEDEM with the GUI and solver modules,
   you first need to build the `INSTALL` target of this project
   as described [above](#build-the-fedem-gui-application), as well as for
-  the parallel projects [fedem-solvers](https://github.com/SAP/fedem-solvers)
-  and [fedem-mdb](https://github.com/SAP/fedem-mdb). Finally, you need to build
-  the end-user documentation in [fedem-docs](https://github.com/SAP/fedem-docs).
+  the parallel projects [fedem-solvers](https://github.com/openfedem/fedem-solvers)
+  and [fedem-mdb](https://github.com/openfedem/fedem-mdb). Finally, you need to build
+  the end-user documentation in [fedem-docs](https://github.com/openfedem/fedem-docs).
 
   Make sure that all four projects use the same installation destination,
   by setting the `CMAKE_INSTALL_PREFIX` variable to the same value for all
@@ -506,9 +506,9 @@ The following configuration steps has been used so far:
       make
       sudo make install
 
-- Configure and build FEDEM GUI from the qt6-port branch:
+- Configure and build FEDEM GUI from the kmokstad/qt6-port branch:
 
-      git clone -b qt6-port git@github.com:kmoks/fedem-gui.git
+      git clone -b qt6-port git@github.com:kmokstad/fedem-gui.git
       mkdir fedem-gui/Release fedem-gui/Debug
       cd fedem-gui/Release
       COIN_ROOT=/usr/local/Coin3D cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_QWTLIB=OFF
