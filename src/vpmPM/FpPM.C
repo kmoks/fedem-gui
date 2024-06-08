@@ -184,7 +184,7 @@ void FpPM::loadUnitConvertionFile()
   if (!FFaAppInfo::isConsole())
     std::cout <<"Loading unit conversion file:\n[ "<< unitFile <<" ]\n"<< std::endl;
 
-  FFaUnitCalculatorProvider::instance()->readCalculatorDefs(unitFile.c_str());
+  FFaUnitCalculatorProvider::instance()->readCalculatorDefs(unitFile);
 }
 
 
@@ -217,7 +217,7 @@ void FpPM::loadSNCurveFile()
   if (!FFaAppInfo::isConsole())
     std::cout <<"Loading S-N curves file:\n[ "<< curveFile <<" ]\n"<< std::endl;
 
-  FFpSNCurveLib::instance()->readSNCurves(curveFile.c_str());
+  FFpSNCurveLib::instance()->readSNCurves(curveFile);
 #endif
 }
 
@@ -992,12 +992,21 @@ bool FpPM::vpmModelOpen(const std::string& givenName, bool doLoadParts,
   Fui::okToGetUserInput(); // This block is started in FpPM::closeModel
 
   // Move the file name to the top of the recent file list
-  std::vector<std::string>::iterator it = std::find(recentFiles.begin(),recentFiles.end(),name);
-  if (it != recentFiles.end()) recentFiles.erase(it);
-  recentFiles.insert(recentFiles.begin(),name);
+  FpPM::addRecent(name);
   Fui::updateUICommands();
 
   return true;
+}
+
+
+void FpPM::addRecent(const std::string& name)
+{
+  std::vector<std::string>::iterator it = std::find(recentFiles.begin(),
+                                                    recentFiles.end(),name);
+  if (it != recentFiles.end())
+    recentFiles.erase(it);
+
+  recentFiles.insert(recentFiles.begin(),name);
 }
 
 
@@ -1168,8 +1177,8 @@ bool FpPM::loadParts(const std::vector<FmPart*>& allParts)
       "To continue with this model, you have to save it into a new model first.";
     if (FapLicenseManager::isLimEdition())
       msg += "\n\nTo use flexible parts, "
-        "you have to purchase the FullFlex edition of Fedem.\n"
-        "You can also try out the Demo edition, see http://www.fedem.com for details.";
+        "you need to have the FullFlex edition of Fedem.\n"
+        "You can also try out the Demo edition.";
     FpPM::unTouchModel(true); // set model view-only
   }
 
@@ -1276,7 +1285,7 @@ bool FpPM::vpmModelSave(bool pruneEmptyDirs)
   // Save the model in <modelFile>.tmp so we don't loose the old file
   // in case of write failure due to disk full, etc.
   std::string tempFile = modelFile + ".tmp";
-  std::ofstream s(tempFile.c_str(),std::ios::out);
+  std::ofstream s(tempFile,std::ios::out);
   if (s)
   {
     Fui::noUserInputPlease();
@@ -1754,7 +1763,7 @@ bool FpPM::vpmModelSaveAs(const std::string& name, bool saveReducedParts,
   // Finally save the model file
   FFaMsg::list("  -> Saving Model File ");
   bool isModelSaved = false;
-  std::ofstream s(name.c_str(),std::ios::out);
+  std::ofstream s(name,std::ios::out);
   if (s)
   {
     FmDB::updateModelVersionOnSave(false);
@@ -1786,6 +1795,10 @@ bool FpPM::vpmModelSaveAs(const std::string& name, bool saveReducedParts,
 	   <<"     Review the messages above to find out what was actually saved.\n"
 	   <<"     Try to free some space on disk and save the model again.\n"
 	   <<"     If you exit Fedem now you will loose any unsaved data.\n\n";
+
+  // Move the file name to the top of the recent file list
+  FpPM::addRecent(name);
+  Fui::updateUICommands();
 
   FapEventManager::permUnselectAll();
   return isModelSaved;
@@ -1944,7 +1957,7 @@ bool FpPM::vpmModelExport(const std::string& name, FmAnalysis* analysis, const c
   {
     // Finally, save the model file
     FFaMsg::list("  -> Writing Model File ");
-    std::ofstream s(name.c_str(),std::ios::out);
+    std::ofstream s(name,std::ios::out);
     if (s)
     {
       FmDB::updateModelVersionOnSave(false);
