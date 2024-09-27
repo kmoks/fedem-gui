@@ -34,6 +34,7 @@
 
 #include "FFuLib/FFuProgressDialog.H"
 #include "FiDeviceFunctions/FiDeviceFunctionFactory.H"
+#include "FiDeviceFunctions/FiASCFile.H"
 
 
 Fmd_SOURCE_INIT(FAPUACURVEDEFINE, FapUACurveDefine, FapUAExistenceHandler);
@@ -215,11 +216,30 @@ void FapUACurveDefine::setDBValues(FFuaUIValues* values)
     if (i < ncc) this->dbcurve->setCurveComp(dynamic_cast<FmCurveSet*>(comp),i++);
 
   // --- From file ---
-  this->dbcurve->setFilePath(curveValues->filePath);
-  const std::string& mPath = FmDB::getMechanismObject()->getAbsModelFilePath();
-  int fileType = FiDeviceFunctionFactory::identify(curveValues->filePath,mPath);
-  if (fileType == RPC_TH_FILE || fileType == ASC_MC_FILE)
-    this->dbcurve->setChannelName(curveValues->channel);
+  auto&& getTheChannel = [this](std::string& channelName,
+                                const std::string& fName,
+                                const std::string& mPath)
+  {
+    std::vector<std::string> channels;
+    std::string fileName(fName);
+    FFaFilePath::makeItAbsolute(fileName,mPath);
+    FiASCFile reader(fileName.c_str());
+    if (reader.open(FiDeviceFunctionBase::Read_Only))
+      if (reader.getChannelList(channels) && !channels.empty() && channels.front() != "1")
+        channelName = channels.front();
+  };
+  if (this->dbcurve->setFilePath(curveValues->filePath)) {
+    const std::string& mPath = FmDB::getMechanismObject()->getAbsModelFilePath();
+    switch (FiDeviceFunctionFactory::identify(curveValues->filePath,mPath)) {
+    case ASC_FILE:
+      getTheChannel(curveValues->channel,curveValues->filePath,mPath);
+    case RPC_TH_FILE:
+    case ASC_MC_FILE:
+      this->dbcurve->setChannelName(curveValues->channel);
+    default:
+      break;
+    }
+  }
 
   // --- Internal function or preview curve ---
   if (!this->dbcurve->setFunctionRef(curveValues->functionRef))
@@ -486,8 +506,6 @@ void FapUACurveDefine::setAutoLegend(bool autoLegend)
 
 void FapUACurveDefine::getChannelList(const std::string& file)
 {
-  if (!this->dbcurve) return;
-
   std::string fName(file);
   FFaFilePath::makeItAbsolute(fName,FmDB::getMechanismObject()->getAbsModelFilePath());
 

@@ -675,7 +675,7 @@ void FuiCurveDefSheet::setUIValues(const FuaCurveDefineValues* v)
   this->fileBrowseField->setAbsToRelPath(v->modelFilePath);
   this->fileBrowseField->setFileName(v->filePath);
   this->channelBtn->setSensitivity(v->isMultiChannelFile);
-  if (v->isMultiChannelFile)
+  if (v->isMultiChannelFile || !v->channel.empty())
     this->channelField->setValue(v->channel);
   else
     this->channelField->setValue("Not set");
