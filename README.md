@@ -1,3 +1,5 @@
+*This fork is replaced by [kmokstad/fedem-gui](https://github.com/kmokstad/fedem-gui), but kept as read-only for the discussions.*
+
 <!---
   SPDX-FileCopyrightText: 2023 SAP SE
 
